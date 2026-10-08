@@ -5,6 +5,9 @@
 [build.environment]
   NODE_VERSION = "22"
   UPLOAD_PROVIDER = "supabase"
+  # Public configuration may be marked as secret when importing an env file.
+  # Keep credentials (database URLs, JWT and server keys) in the scanner.
+  SECRETS_SCAN_OMIT_KEYS = "UPLOAD_PROVIDER,NEXT_PUBLIC_SITE_URL,ADMIN_EMAIL,SUPABASE_STORAGE_BUCKET,SUPABASE_URL,NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NODE_ENV"
 
 [functions]
   directory = "netlify/functions"

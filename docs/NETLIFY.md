@@ -35,9 +35,25 @@ Antes do primeiro deploy, cadastre em **Project configuration → Environment va
 
 Use os valores privados de `.env.supabase`; não os publique no GitHub. Também é possível usar `SUPABASE_SERVICE_ROLE_KEY` no lugar da chave secreta atual.
 
+Ao cadastrar as variáveis, marque **Contains secret values** apenas para credenciais, como `DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET` e `SUPABASE_SECRET_KEY` / `SUPABASE_SERVICE_ROLE_KEY`. URLs públicas, bucket, provedor de upload e `NODE_ENV` são configurações públicas.
+
 Não importe `NEXT_PUBLIC_SITE_URL=http://localhost:3001` para a hospedagem. Sem essa variável, o build utiliza a URL HTTPS de produção fornecida pela Netlify em `URL`. Para um domínio próprio, configure `NEXT_PUBLIC_SITE_URL=https://seu-dominio` e faça um novo deploy. Previews usam `DEPLOY_PRIME_URL`, para que login e formulário validem a origem correta. Mantenha a mesma origem ao navegar e enviar formulários.
 
 Não é necessário criar outro administrador: o banco remoto mantém os usuários já cadastrados. `ADMIN_EMAIL` e `ADMIN_PASSWORD` só são usados pelo seed, não pelo login normal.
+
+### Se o build falhar em “Scanning for secrets”
+
+Se aparecer `Compiled successfully` e depois `Secret env var "UPLOAD_PROVIDER"'s value detected`, o Next.js compilou; o bloqueio ocorreu na verificação de segredos. Valores públicos como `supabase`, `site-media`, URLs do site/projeto e `production` aparecem naturalmente no código e na documentação.
+
+O `netlify.toml` define `SECRETS_SCAN_OMIT_KEYS` somente para essas configurações públicas e para o e-mail do administrador. A verificação continua ativa para senhas, conexões PostgreSQL, `JWT_SECRET` e chaves privadas do servidor. Não é necessário alterar a chave secreta do Supabase para corrigir esse falso positivo.
+
+Depois que a correção entrar na branch `main`, confira se a Netlify iniciou um novo deploy desse commit. Se não iniciar, use **Deploys → Trigger deploy → Deploy project**. Repetir um deploy do commit antigo continua usando a configuração antiga.
+
+Caso sua equipe tenha uma configuração própria da variável `SECRETS_SCAN_OMIT_KEYS`, confira a lista efetiva no novo log. Ela deve conter apenas:
+
+```text
+UPLOAD_PROVIDER,NEXT_PUBLIC_SITE_URL,ADMIN_EMAIL,SUPABASE_STORAGE_BUCKET,SUPABASE_URL,NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,NODE_ENV
+```
 
 ## 3. Preparar a nova rotina no banco
 
@@ -83,6 +99,7 @@ Os uploads usam Supabase Storage. Não envie apenas a pasta `.next` por drag-and
 - 20 testes unitários, 4 testes de navegação/administrador/contato, lint e TypeScript aprovados.
 - Migração aplicada ao Supabase e primeiro heartbeat confirmado no banco. Repetição imediata retornou `skipped`.
 - Intervalo testado antes e depois de 144 horas, em transação revertida. RLS ativa e ausência de acesso para `anon`/`authenticated` conferidas no banco real.
+- Correção dos falsos positivos de secret scanning validada com o scanner oficial do Netlify Build: os seis alertas foram reproduzidos e os 187 arquivos passaram sem alertas após a lista de configurações públicas. Credenciais privadas e smart detection continuam sendo verificadas. Os 21 testes unitários da revisão atual passaram.
 
 Essas verificações não ativam o agendamento remoto: ele começa após publicar a aplicação de produção na Netlify, com `DATABASE_URL` também disponível para Functions.
 
@@ -90,4 +107,5 @@ Essas verificações não ativam o agendamento remoto: ele começa após publica
 
 - [Next.js na Netlify](https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/)
 - [Scheduled Functions](https://docs.netlify.com/build/functions/scheduled-functions/)
+- [Configuração da verificação de segredos](https://docs.netlify.com/build/environment-variables/secrets-controller/#configure-secret-scanning)
 - [Pausa de projetos gratuitos do Supabase](https://supabase.com/docs/guides/platform/free-project-pausing)

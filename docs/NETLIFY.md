@@ -20,6 +20,8 @@ O `netlify.toml` já define esses caminhos relativos à pasta do projeto. O buil
 
 ## 2. Variáveis privadas
 
+Para importar o ambiente local já preparado, siga [NETLIFY-ENV.md](NETLIFY-ENV.md). O conteúdo completo com credenciais está somente em `.env.netlify` e `docs/NETLIFY-ENV-PRIVADO.md`, arquivos privados locais excluídos do GitHub.
+
 Antes do primeiro deploy, cadastre em **Project configuration → Environment variables**, disponíveis para **Builds e Functions**:
 
 | Variável | Configuração |

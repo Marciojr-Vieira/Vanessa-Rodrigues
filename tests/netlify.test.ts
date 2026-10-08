@@ -13,16 +13,21 @@ const env={DATABASE_URL:'postgresql://test:test@localhost:5432/test?schema=vanes
 
 describe('Configuração Netlify',()=>{
  it('usa a origem da Netlify e força uploads persistentes',()=>{
-  const result=netlifyEnvironment({...env,UPLOAD_PROVIDER:'local',DOCKER_BUILD:'true'})
+  const result=netlifyEnvironment({...env,UPLOAD_PROVIDER:'local',DOCKER_BUILD:'true',NODE_ENV:'development'})
+  expect(result.NODE_ENV).toBe('production')
   expect(result.NEXT_PUBLIC_SITE_URL).toBe('https://site.netlify.app')
   expect(result.UPLOAD_PROVIDER).toBe('supabase');expect(result.DOCKER_BUILD).toBeUndefined()
  })
  it('preview utiliza sua própria origem, sem herdar o domínio de produção',()=>{
   expect(netlifyEnvironment({...env,CONTEXT:'deploy-preview',DEPLOY_PRIME_URL:'https://deploy-preview-1--site.netlify.app',NEXT_PUBLIC_SITE_URL:'https://advogada.example'}).NEXT_PUBLIC_SITE_URL).toBe('https://deploy-preview-1--site.netlify.app')
  })
+ it('ignora NEXT_PUBLIC_SITE_URL local e usa a origem da Netlify',()=>{
+  expect(netlifyEnvironment({...env,NEXT_PUBLIC_SITE_URL:'http://localhost:3000'}).NEXT_PUBLIC_SITE_URL).toBe('https://site.netlify.app')
+ })
  it('recusa SQLite, origem local e JWT fraco antes de compilar',()=>{
   expect(()=>netlifyEnvironment({...env,DATABASE_URL:'file:./dev.db'})).toThrow('PostgreSQL')
-  expect(()=>netlifyEnvironment({...env,NEXT_PUBLIC_SITE_URL:'http://localhost:3001'})).toThrow('HTTPS')
+  expect(()=>netlifyEnvironment({...env,NEXT_PUBLIC_SITE_URL:'http://advogada.example'})).toThrow('HTTPS')
+  expect(()=>netlifyEnvironment({...env,URL:undefined,NEXT_PUBLIC_SITE_URL:'http://localhost:3001'})).toThrow('NEXT_PUBLIC_SITE_URL')
   expect(()=>netlifyEnvironment({...env,JWT_SECRET:'weak'})).toThrow('32')
  })
 })

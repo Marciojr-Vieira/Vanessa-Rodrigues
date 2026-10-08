@@ -1,0 +1,14 @@
+'use client'
+import Image from 'next/image'
+import { useState,useEffect,useCallback } from 'react'
+type Media={id:string;url:string;alt:string;originalName:string;size:number}
+export function MediaLibrary(){
+ const [records,setRecords]=useState<Media[]>([]);const [message,setMessage]=useState('');const [busy,setBusy]=useState(false)
+ const load=useCallback(async()=>{const res=await fetch('/api/admin/media');const data=await res.json();if(!res.ok)throw new Error(data.error);setRecords(data.records)},[])
+ useEffect(()=>{const timer=setTimeout(()=>{void load().catch(e=>setMessage(e.message))},0);return()=>clearTimeout(timer)},[load])
+ async function mutate(method:string,body:FormData|object){
+  setBusy(true);setMessage('')
+  try{const res=await fetch('/api/admin/media',{method,headers:body instanceof FormData?undefined:{'Content-Type':'application/json'},body:body instanceof FormData?body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.error);await load();setMessage('Biblioteca atualizada.')}catch(e){setMessage(e instanceof Error?e.message:'Erro na operação.')}finally{setBusy(false)}
+ }
+ return <div className="cms space-y-6"><h1 className="heading-serif text-3xl">Biblioteca de mídia</h1><p className="text-text-secondary">Envie fotos, logos e ícones. As imagens são otimizadas automaticamente.</p>{message && <p role="status" className="text-accent">{message}</p>}<form className="cms-panel space-y-4" onSubmit={e=>{e.preventDefault();void mutate('POST',new FormData(e.currentTarget))}}><label className="block">Imagem (até 5 MB)<input name="file" type="file" required accept="image/jpeg,image/png,image/webp,image/gif,image/x-icon,image/vnd.microsoft.icon"/></label><label className="block">Descrição para acessibilidade<input name="alt" required maxLength={500}/></label><button className="cms-primary" disabled={busy}>{busy?'Enviando…':'Enviar imagem'}</button></form><div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">{records.map(m=><article key={m.id} className="cms-panel space-y-3"><div className="relative h-48"><Image src={m.url} alt={m.alt || m.originalName} fill sizes="350px" className="object-contain"/></div><p className="text-sm break-all">{m.originalName}</p><p className="text-xs text-text-secondary">{Math.round(m.size/1024)} KB</p><input aria-label={'Descrição de '+m.originalName} value={m.alt || ''} onChange={e=>setRecords(rows=>rows.map(r=>r.id===m.id?{...r,alt:e.target.value}:r))}/><div className="flex flex-wrap gap-2"><button disabled={busy} onClick={()=>mutate('PATCH',{id:m.id,alt:m.alt})}>Salvar descrição</button><button onClick={()=>navigator.clipboard.writeText(m.url).then(()=>setMessage('Endereço copiado.')).catch(()=>setMessage(m.url))}>Copiar endereço</button><button disabled={busy} onClick={()=>{if(window.confirm('Excluir esta imagem permanentemente?'))void mutate('DELETE',{id:m.id})}}>Excluir</button></div></article>)}</div></div>
+}

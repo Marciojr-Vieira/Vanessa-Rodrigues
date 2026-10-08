@@ -1,0 +1,15 @@
+[build]
+  command = "npm run netlify:build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  UPLOAD_PROVIDER = "supabase"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# UTC. The database guard sends a heartbeat only after six elapsed days.
+[functions."supabase-heartbeat"]
+  schedule = "0 12 * * *"

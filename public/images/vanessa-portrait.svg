@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1715" />
+      <stop offset="50%" stop-color="#141211" />
+      <stop offset="100%" stop-color="#0B0A09" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EDD5BE" />
+      <stop offset="100%" stop-color="#C4A47E" />
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="50%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#E2C2A0" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#0B0A09" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bgGrad)" />
+  <circle cx="400" cy="380" r="320" fill="url(#glowGrad)" />
+
+  <!-- Silhueta elegante em tons escuros e dourado sutil -->
+  <g transform="translate(400, 480)" text-anchor="middle">
+    <!-- Círculo de moldura -->
+    <circle cx="0" cy="-100" r="140" fill="#161413" stroke="#E2C2A0" stroke-width="2" stroke-opacity="0.4" />
+    <!-- Monograma VR grande no centro da foto ilustrativa -->
+    <path d="M-40 -130 L0 -50 L18 -90" fill="none" stroke="url(#goldGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M12 -50 L12 -135 C12 -135 48 -140 48 -115 C48 -95 12 -95 12 -95 L50 -50" fill="none" stroke="url(#goldGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Texto de Placeholder elegante -->
+    <text y="90" font-family="'Playfair Display', Georgia, serif" font-size="28" fill="#F4EFEA" letter-spacing="4">VANESSA RODRIGUES</text>
+    <text y="125" font-family="'Inter', sans-serif" font-size="14" fill="#E2C2A0" letter-spacing="6">ADVOGADA</text>
+    <text y="165" font-family="'Inter', sans-serif" font-size="12" fill="#716B64" letter-spacing="1">[ Foto da advogada - substitua no painel ]</text>
+  </g>
+
+  <!-- Gradiente de fusão inferior com o fundo da página -->
+  <rect y="750" width="800" height="250" fill="url(#bgGrad)" opacity="0.9" />
+</svg>
+

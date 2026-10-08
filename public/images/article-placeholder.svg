@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bgArt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1816" />
+      <stop offset="100%" stop-color="#0E0D0C" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#bgArt)" />
+  <rect x="20" y="20" width="1160" height="635" rx="16" fill="none" stroke="#E2C2A0" stroke-opacity="0.15" stroke-width="1.5" />
+  <circle cx="600" cy="300" r="80" fill="#161413" stroke="#E2C2A0" stroke-opacity="0.3" stroke-width="2" />
+  <path d="M575 285 L600 330 L610 310" fill="none" stroke="#E2C2A0" stroke-width="3" stroke-linecap="round" />
+  <path d="M608 330 L608 275 C608 275 628 270 628 290 C628 305 608 305 608 305 L630 330" fill="none" stroke="#E2C2A0" stroke-width="3" stroke-linecap="round" />
+  <text x="600" y="440" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="24" fill="#F4EFEA" letter-spacing="2">VANESSA RODRIGUES ADVOCACIA</text>
+  <text x="600" y="475" text-anchor="middle" font-family="'Inter', sans-serif" font-size="14" fill="#A8A19A" letter-spacing="1">Artigos &amp; Atualizações Jurídicas</text>
+</svg>
+

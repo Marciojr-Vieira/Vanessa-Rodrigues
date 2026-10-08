@@ -1,0 +1,70 @@
+{
+  "checks": [
+    {
+      "viewport": {
+        "width": 1487,
+        "height": 1058
+      },
+      "status": 200,
+      "overflow": false,
+      "nestedButtons": 0,
+      "heading": "64px",
+      "whatsapp": {
+        "position": "fixed",
+        "animation": "none",
+        "visible": "grid"
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "overflow": false,
+      "nestedButtons": 0,
+      "heading": "35px",
+      "whatsapp": {
+        "position": "fixed",
+        "animation": "none",
+        "visible": "grid"
+      }
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "status": 200,
+      "overflow": false,
+      "nestedButtons": 0,
+      "heading": "45.056px",
+      "whatsapp": {
+        "position": "fixed",
+        "animation": "none",
+        "visible": "grid"
+      }
+    },
+    {
+      "path": "/blog",
+      "status": 200
+    },
+    {
+      "path": "/recuperacao-de-instagram",
+      "status": 200
+    },
+    {
+      "path": "/politica-de-privacidade",
+      "status": 200
+    },
+    {
+      "path": "/termos-de-uso",
+      "status": 200
+    },
+    {
+      "path": "/admin/login",
+      "status": 200
+    }
+  ],
+  "errors": []
+}

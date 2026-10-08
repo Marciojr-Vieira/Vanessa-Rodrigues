@@ -1,0 +1,62 @@
+{
+  "production": true,
+  "results": [
+    {
+      "viewport": {
+        "width": 1487,
+        "height": 1058
+      },
+      "status": 200,
+      "overflow": false,
+      "heading": "74px",
+      "highlight": "questões digitais.",
+      "radius": "6px",
+      "whatsapp": "none",
+      "copy": "Orientação jurídica para empresas, trabalhadores e questões digitais.",
+      "heroImage": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "overflow": false,
+      "heading": "40.17px",
+      "highlight": "questões digitais.",
+      "radius": "6px",
+      "whatsapp": "none",
+      "copy": "Orientação jurídica para empresas, trabalhadores e questões digitais.",
+      "heroImage": true
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "status": 200,
+      "overflow": false,
+      "heading": "51.2px",
+      "highlight": "questões digitais.",
+      "radius": "6px",
+      "whatsapp": "none",
+      "copy": "Orientação jurídica para empresas, trabalhadores e questões digitais.",
+      "heroImage": true
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "status": 200,
+      "overflow": false,
+      "heading": "38px",
+      "highlight": "questões digitais.",
+      "radius": "6px",
+      "whatsapp": "none",
+      "copy": "Orientação jurídica para empresas, trabalhadores e questões digitais.",
+      "heroImage": true
+    }
+  ],
+  "errors": []
+}

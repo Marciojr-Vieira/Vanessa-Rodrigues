@@ -1,0 +1,25 @@
+export type FieldKind = 'text' | 'textarea' | 'html' | 'boolean' | 'number' | 'image' | 'json' | 'select'
+export interface CmsField { key: string; label: string; kind: FieldKind; required?: boolean; options?: string[] }
+export interface CmsModule { title: string; singleton?: boolean; adminOnly?: boolean; ordered?: boolean; fields: CmsField[] }
+const f = (key: string, label: string, kind: FieldKind = 'text', required = false, options?: string[]): CmsField => ({ key, label, kind, required, options })
+export const cmsModules: Record<string, CmsModule> = {
+  settings: { title: 'Configurações gerais', singleton: true, adminOnly: true, fields: [
+    f('siteName','Nome do escritório','text',true), f('oab','OAB / UF'), f('whatsapp','WhatsApp com código do país'), f('email','E-mail'), f('address','Endereço'), f('city','Cidade / UF'), f('instagram','Instagram (@perfil)'), f('linktree','Linktree'), f('logoUrl','Logo','image'), f('faviconUrl','Ícone do site','image'),
+    f('whatsappMsgEmpresa','Mensagem para empresas','textarea',true), f('whatsappMsgTrabalhador','Mensagem para trabalhadores','textarea',true), f('whatsappMsgConta','Mensagem para recuperação de contas','textarea',true), f('blogEnabled','Exibir blog','boolean')] },
+  hero: { title: 'Abertura da Home', singleton: true, fields: [f('eyebrow','Rótulo','text',true),f('title','Título','text',true),f('subtitle','Descrição','textarea',true),f('ctaText','Texto do botão','text',true),f('ctaLink','Destino do botão'),f('secondaryCta','Texto do link secundário'),f('photoUrl','Foto','image'),f('verticalPhrase','Frase lateral'),f('seals','Selos','json',true)] },
+  about: { title: 'Sobre Vanessa', singleton: true, fields: [f('name','Nome','text',true),f('title','Título profissional','text',true),f('bio','Biografia','textarea',true),f('photoUrl','Foto','image'),f('ctaText','Texto do botão','text',true),f('pillars','Pilares','json',true)] },
+  final: { title: 'Chamada final', singleton: true, fields: [f('title','Título','text',true),f('subtitle','Descrição','textarea',true),f('buttonText','Texto do botão','text',true),f('phrase','Frase','text',true)] },
+  services: { title: 'Cards de atendimento', ordered: true, fields: [f('title','Título','text',true),f('subtitle','Descrição','textarea',true),f('icon','Ícone'),f('ctaText','Texto do botão','text',true),f('whatsappMessage','Mensagem do WhatsApp','textarea',true),f('type','Tipo de atendimento','select',true,['EMPRESA','TRABALHADOR','CONTA']),f('highlight','Destacar card','boolean'),f('active','Ativo','boolean')] },
+  areas: { title: 'Áreas de atuação', ordered: true, fields: [f('title','Título','text',true),f('slug','Endereço da página','text',true),f('summary','Resumo','textarea',true),f('content','Conteúdo','html',true),f('icon','Ícone'),f('imageUrl','Imagem','image'),f('active','Ativa','boolean'),f('seoTitle','Título SEO'),f('seoDesc','Descrição SEO')] },
+  recovery: { title: 'Tipos de recuperação de contas', ordered: true, fields: [f('title','Título','text',true),f('description','Descrição','textarea',true),f('icon','Ícone'),f('active','Ativo','boolean')] },
+  recoveryContent: { title: 'Seção de recuperação', singleton: true, fields: [f('title','Título','text',true),f('description','Introdução','textarea',true),f('processTitle','Título do processo','text',true),f('processDescription','Explicação do processo','textarea',true),f('ctaText','Texto do botão','text',true)] },
+  authority: { title: 'Números de autoridade', ordered: true, fields: [f('label','Descrição','text',true),f('value','Valor','text',true),f('icon','Ícone')] },
+  steps: { title: 'Como funciona', ordered: true, fields: [f('step','Número do passo','number',true),f('title','Título','text',true),f('description','Descrição','textarea',true)] },
+  faq: { title: 'Perguntas frequentes', ordered: true, fields: [f('question','Pergunta','text',true),f('answer','Resposta','textarea',true),f('category','Categoria','select',true,['geral','recuperacao']),f('active','Ativa','boolean')] },
+  blog: { title: 'Blog e artigos', fields: [f('title','Título','text',true),f('slug','Endereço do artigo','text',true),f('excerpt','Resumo','textarea',true),f('content','Conteúdo','html',true),f('coverImage','Capa','image'),f('coverAlt','Descrição da capa'),f('status','Situação','select',true,['DRAFT','PUBLISHED']),f('seoTitle','Título SEO'),f('seoDesc','Descrição SEO')] },
+  pages: { title: 'Páginas legais', fields: [f('title','Título','text',true),f('slug','Endereço','select',true,['politica-de-privacidade','termos-de-uso']),f('content','Conteúdo','html',true)] },
+  seo: { title: 'SEO por página', fields: [f('page','Página (ex.: / ou /blog)','text',true),f('title','Título'),f('description','Descrição','textarea'),f('ogImage','Imagem de compartilhamento','image'),f('canonical','URL canônica')] },
+  testimonials: { title: 'Depoimentos (desativados por padrão)', fields: [f('name','Nome','text',true),f('text','Texto','textarea',true),f('rating','Avaliação','number',true)] },
+}
+export function slugify(text: string) { return text.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') }
+

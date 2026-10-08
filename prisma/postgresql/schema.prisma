@@ -1,0 +1,327 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// Autenticação e Usuários
+// ============================================
+
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      String    @default("ADMIN") // ADMIN | EDITOR
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+  auditLogs AuditLog[]
+}
+
+// One server-only operational record; no personal data or public API access.
+model ServiceHeartbeat {
+  id         String    @id
+  lastSentAt DateTime?
+  source     String    @default("netlify")
+  runs       Int       @default(0)
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// Configurações Gerais do Site
+// ============================================
+
+model SiteSettings {
+  id                String  @id @default("singleton")
+  siteName          String  @default("Vanessa Rodrigues")
+  oab               String  @default("[OAB/UF]")
+  whatsapp          String  @default("[WHATSAPP]")
+  email             String  @default("[EMAIL]")
+  address           String  @default("[ENDEREÇO]")
+  city              String  @default("[CIDADE/UF]")
+  instagram         String  @default("[INSTAGRAM]")
+  linktree          String  @default("[LINKTREE]")
+  logoUrl           String?
+  faviconUrl        String?
+  blogEnabled       Boolean @default(true)
+
+  // Mensagens pré-preenchidas do WhatsApp por tipo de atendimento
+  whatsappMsgEmpresa     String @default("Olá, sou empresa e gostaria de falar sobre assessoria jurídica.")
+  whatsappMsgTrabalhador String @default("Olá, sou trabalhador(a) e gostaria de explicar meu caso.")
+  whatsappMsgConta       String @default("Olá, preciso de ajuda para recuperar minha conta em rede social.")
+
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+// ============================================
+// Conteúdo da Home
+// ============================================
+
+model HeroContent {
+  id          String  @id @default("singleton")
+  eyebrow     String  @default("DIREITO TRABALHISTA E DIGITAL")
+  title       String  @default("Orientação jurídica para empresas, trabalhadores e questões digitais.")
+  subtitle    String  @default("Atuação estratégica, atendimento humanizado e foco na segurança jurídica de cada caso.")
+  ctaText     String  @default("Falar no WhatsApp")
+  ctaLink     String  @default("#contato")
+  secondaryCta String @default("Conheça minha atuação →")
+  photoUrl    String?
+  verticalPhrase String @default("Segurança jurídica para o que realmente importa.")
+
+  // Selos (JSON array)
+  seals       String  @default("[{\"icon\":\"Shield\",\"text\":\"Atendimento personalizado\"},{\"icon\":\"Lock\",\"text\":\"Sigilo e ética profissional\"},{\"icon\":\"Target\",\"text\":\"Atuação estratégica\"}]")
+
+  updatedAt   DateTime @updatedAt @default(now())
+}
+
+model ServiceCard {
+  id              String  @id @default(cuid())
+  title           String
+  subtitle        String
+  icon            String  @default("Briefcase")
+  ctaText         String  @default("Falar no WhatsApp")
+  whatsappMessage String
+  type            String @default("EMPRESA")
+  highlight       Boolean @default(false)
+  order           Int     @default(0)
+  active          Boolean @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model PracticeArea {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  summary     String
+  content     String  // Rich text HTML
+  icon        String  @default("Scale")
+  imageUrl    String?
+  active      Boolean @default(true)
+  order       Int     @default(0)
+  seoTitle    String?
+  seoDesc     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AccountRecoveryType {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  icon        String  @default("ShieldAlert")
+  order       Int     @default(0)
+  active      Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RecoveryContent {
+  id String @id @default("singleton")
+  title String @default("Recuperação de contas do Instagram e redes sociais")
+  description String @default("A perda de acesso pode afetar sua vida pessoal e sua atividade profissional. Cada situação poderá ser analisada para avaliar as medidas adequadas, sem garantia de resultado.")
+  processTitle String @default("Análise individual e preservação de provas")
+  processDescription String @default("O atendimento começa pela compreensão dos fatos e dos registros disponíveis. Havendo viabilidade, poderão ser avaliadas medidas administrativas, extrajudiciais ou judiciais adequadas ao caso.")
+  ctaText String @default("Solicitar análise do caso")
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model WhatsAppClick {
+  id String @id @default(cuid())
+  type String
+  createdAt DateTime @default(now())
+}
+
+model RateLimitBucket {
+  key String @id
+  count Int @default(1)
+  resetAt DateTime
+}
+
+model AboutContent {
+  id          String  @id @default("singleton")
+  photoUrl    String?
+  name        String  @default("Vanessa Rodrigues")
+  title       String  @default("Advogada")
+  bio         String  @default("Advogada atuante nas áreas de Direito Trabalhista e Direito Digital, com foco em assessoria jurídica para empresas de diversos segmentos. Especialista em recuperação de contas em redes sociais, com atendimento humanizado e comprometido com a segurança jurídica de cada caso.")
+  ctaText     String  @default("Falar no WhatsApp")
+
+  // Pilares (JSON array)
+  pillars     String  @default("[{\"icon\":\"Scale\",\"title\":\"Atuação ética e responsável\"},{\"icon\":\"Heart\",\"title\":\"Atendimento humanizado\"},{\"icon\":\"Search\",\"title\":\"Análise individual de cada caso\"},{\"icon\":\"Lock\",\"title\":\"Seu caso com sigilo e segurança\"}]")
+
+  updatedAt   DateTime @updatedAt @default(now())
+}
+
+model AuthorityStat {
+  id        String  @id @default(cuid())
+  label     String
+  value     String
+  icon      String  @default("TrendingUp")
+  order     Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HowItWorksStep {
+  id          String  @id @default(cuid())
+  step        Int
+  title       String
+  description String
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CtaFinalContent {
+  id          String  @id @default("singleton")
+  title       String  @default("Estou à disposição para entender o seu caso.")
+  subtitle    String  @default("Escolha o tipo de atendimento e fale comigo.")
+  buttonText  String  @default("Falar no WhatsApp")
+  phrase      String  @default("Direito é mais do que lei. É sobre pessoas.")
+  updatedAt   DateTime @updatedAt @default(now())
+}
+
+// ============================================
+// FAQ
+// ============================================
+
+model FaqItem {
+  id        String  @id @default(cuid())
+  question  String
+  answer    String
+  category  String  @default("geral") // geral | recuperacao
+  order     Int     @default(0)
+  active    Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// Blog
+// ============================================
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String   // Rich text HTML
+  coverImage  String?
+  coverAlt    String?
+  seoTitle    String?
+  seoDesc     String?
+  status      String   @default("DRAFT") // DRAFT | PUBLISHED
+  authorId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+}
+
+// ============================================
+// Depoimentos (desativado por padrão)
+// ============================================
+
+model Testimonial {
+  id        String  @id @default(cuid())
+  name      String
+  text      String
+  rating    Int     @default(5)
+  active    Boolean @default(false) // Desativado por padrão (OAB)
+  order     Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// Leads / Contatos
+// ============================================
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  whatsapp  String
+  type      String   // EMPRESA | TRABALHADOR | CONTA
+  message   String?
+  consent   Boolean  @default(false)
+  status    String   @default("NEW") // NEW | CONTACTED | SERVED | ARCHIVED
+  notes     String?
+  honeypot  String?  // Campo anti-spam
+  ip        String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// Mídia
+// ============================================
+
+model MediaFile {
+  id           String   @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  alt          String?
+  url          String
+  storageProvider String @default("local")
+  storageBucket String?
+  objectKey String?
+  createdAt    DateTime @default(now())
+}
+
+// ============================================
+// Páginas Legais
+// ============================================
+
+model LegalPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+// ============================================
+// SEO por Página
+// ============================================
+
+model SeoSettings {
+  id          String  @id @default(cuid())
+  page        String  @unique // slug da página
+  title       String?
+  description String?
+  ogImage     String?
+  canonical   String?
+  updatedAt   DateTime @updatedAt @default(now())
+}
+
+// ============================================
+// Logs de Auditoria
+// ============================================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // CREATE | UPDATE | DELETE | LOGIN | LOGOUT
+  entity    String   // Nome do modelo
+  entityId  String?
+  details   String?  // JSON
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
